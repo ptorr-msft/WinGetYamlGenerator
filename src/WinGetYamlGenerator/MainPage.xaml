@@ -1,0 +1,84 @@
+﻿<Page
+    x:Class="WinGetYamlGenerator.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:WinGetYamlGenerator"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    FontSize="15" Height="490" Width="780">
+
+    <Grid Margin="12">
+        <StackPanel>
+            <TextBlock Text="WinGet YAML Generator, for Thomas with 💗" FontSize="20" FontWeight="Bold" Margin="0,10" HorizontalAlignment="Center"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <!--ID-->
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="ID:" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <TextBox Grid.Row="0" Grid.Column="1" x:Name="txtId" HorizontalAlignment="Stretch" Margin="0,5"/>
+
+                <!--Publisher-->
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Publisher:" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <TextBox Grid.Row="1" Grid.Column="1" x:Name="txtPublisher" HorizontalAlignment="Stretch" Margin="0,5"/>
+
+                <!--Name-->
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Name:" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <TextBox Grid.Row="2" Grid.Column="1" x:Name="txtName" HorizontalAlignment="Stretch" Margin="0,5"/>
+
+                <!--Version-->
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="Version:" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <TextBox Grid.Row="3" Grid.Column="1" x:Name="txtVersion" HorizontalAlignment="Stretch" Margin="0,5"/>
+
+                <!--License-->
+                <TextBlock Grid.Row="4" Grid.Column="0" Text="License:" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <TextBox Grid.Row="4" Grid.Column="1" x:Name="txtLicense" HorizontalAlignment="Stretch" Margin="0,5"/>
+
+                <!--License URL-->
+                <TextBlock Grid.Row="5" Grid.Column="0" Text="License URL:" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <TextBox Grid.Row="5" Grid.Column="1" x:Name="txtLicenseUrl" HorizontalAlignment="Stretch" Margin="0,5"/>
+
+                <!--x64 Installer-->
+                <TextBlock Grid.Row="6" Grid.Column="0" Text="Installer URL (x64):" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <Grid Grid.Row="6" Grid.Column="1" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Row="0" Grid.Column="0" x:Name="txtInstallerUrlx64" HorizontalAlignment="Stretch" Margin="0,5"/>
+                    <Button Content="Download" Grid.Row="0" Grid.Column="1" Margin="5,0,0,0" Click="DownloadAndCheckInstaller"/>
+                </Grid>
+
+                <!--Installer Type-->
+                <TextBlock Grid.Row="7" Grid.Column="0" Text="Installer Type (x64):" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <TextBox Grid.Row="7" Grid.Column="1" x:Name="txtInstallerTypex64" HorizontalAlignment="Stretch" Margin="0,5"/>
+
+                <!--x64 Hash-->
+                <TextBlock Grid.Row="8" Grid.Column="0" Text="Installer SHA256 Hash (x64):" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <Grid Grid.Row="8" Grid.Column="1" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Row="0" Grid.Column="0" x:Name="txtInstallerHashx64" HorizontalAlignment="Stretch" Margin="0,5"/>
+                    <Button Content="Generate" Grid.Row="0" Grid.Column="1" Margin="5,0,0,0" Click="GenerateHashFromFile"/>
+                </Grid>
+            </Grid>
+            <Button Content="Save as YAML file" Click="GenerateYaml" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,10" />
+        </StackPanel>
+    </Grid>
+</Page>
