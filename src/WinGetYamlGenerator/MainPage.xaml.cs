@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.ApplicationModel.Store.Preview.InstallControl;
 using Windows.Foundation;
 using Windows.Networking.BackgroundTransfer;
 using Windows.Storage;
@@ -16,6 +18,7 @@ using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -26,209 +29,15 @@ namespace WinGetYamlGenerator
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        internal AppInfo AppInfo { get; } = new AppInfo();
+
         public MainPage()
         {
             InitializeComponent();
-            ApplicationView.PreferredLaunchViewSize = new Size(780, 500);
+            InstallerPopup.Visibility = Visibility.Collapsed;
+
+            ApplicationView.PreferredLaunchViewSize = new Size(780, 700);
             ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
-        }
-
-        bool VerifyAllFields(IList<string> errors)
-        {
-            bool success = true;
-            success &= VerifyId(errors);
-            success &= VerifyPublisher(errors);
-            success &= VerifyName(errors);
-            success &= VerifyVersion(errors);
-            success &= VerifyLicense(errors);
-            success &= VerifyLicenseUrl(errors);
-            success &= VerifyInstallerUrlx64(errors);
-            success &= VerifyInstallerKindx64(errors);
-            success &= VerifyInstallerHashx64(errors);
-
-            return success;
-        }
-
-        private bool VerifyLicense(IList<string> errors)
-        {
-            var license = txtLicense.Text;
-            if (string.IsNullOrEmpty(license))
-            {
-                errors.Add("License cannot be empty.");
-                return false;
-            }
-
-            return true;
-        }
-
-        private bool VerifyInstallerKindx64(IList<string> errors)
-        {
-            var kind = txtInstallerTypex64.Text;
-            if (string.IsNullOrEmpty(kind))
-            {
-                // Optional
-                return true;
-            }
-
-            kind = kind.ToLowerInvariant();
-            if (kind != "msi" && kind != "msix" && kind != "exe")
-            {
-                errors.Add("Installer Type must be 'MSI', 'MSIX', or 'EXE'");
-                return false;
-            }
-
-            return true;
-        }
-
-        private bool VerifyInstallerUrlx64(IList<string> errors)
-        {
-            var uri = txtInstallerUrlx64.Text;
-            if (string.IsNullOrEmpty(uri))
-            {
-                errors.Add("Installer URL cannot be empty.");
-                return false;
-            }
-
-            if (!Uri.TryCreate(uri, UriKind.Absolute, out var _))
-            {
-                errors.Add($"Installer URL '{uri}' is not a valid URL.");
-                return false;
-            }
-
-            return true;
-        }
-
-        private bool VerifyInstallerHashx64(IList<string> errors)
-        {
-            var hash = txtInstallerHashx64.Text;
-            if (string.IsNullOrEmpty(hash))
-            {
-                errors.Add("Installer Hash cannot be empty.");
-                return false;
-            }
-
-            if (hash.Length != 64)
-            {
-                errors.Add($"Installer Hash is not a valid SHA256 hash.");
-                return false;
-            }
-
-            return true;
-        }
-
-        private bool VerifyLicenseUrl(IList<string> errors)
-        {
-            var uri = txtLicenseUrl.Text;
-            if (string.IsNullOrEmpty(uri))
-            {
-                // Optional
-                return true;
-            }
-
-            if (!Uri.TryCreate(uri, UriKind.Absolute, out var _))
-            {
-                errors.Add($"License URL '{uri}' is not a valid URL.");
-                return false;
-            }
-
-            return true;
-        }
-
-        private bool VerifyName(IList<string> errors)
-        {
-            var name = txtName.Text;
-            if (string.IsNullOrEmpty(name))
-            {
-                errors.Add("Name cannot be empty.");
-                return false;
-            }
-
-            return true;
-        }
-
-        bool VerifyId(IList<string> errors)
-        {
-            var id = txtId.Text;
-            if (string.IsNullOrEmpty(id))
-            {
-                errors.Add("ID cannot be empty.");
-                return false;
-            }
-
-            if (id.Contains(" "))
-            {
-                errors.Add("ID should not contain spaces.");
-                return false;
-            }
-
-            if (!id.Contains("."))
-            {
-                errors.Add("ID should be in the form 'publisher.appname[.more_stuff]");
-                return false;
-            }
-
-            return true;
-        }
-
-        bool VerifyPublisher(IList<string> errors)
-        {
-            var publisher = txtPublisher.Text;
-            if (string.IsNullOrEmpty(publisher))
-            {
-                errors.Add("Publisher cannot be empty.");
-                return false;
-            }
-
-            return true;
-        }
-
-        bool VerifyVersion(IList<string> errors)
-        {
-            var version = txtVersion.Text;
-            if (string.IsNullOrEmpty(version))
-            {
-                errors.Add("Version cannot be empty.");
-                return false;
-            }
-
-            if (!Version.TryParse(version, out var _))
-            {
-                errors.Add("Version must be in the form a.b.c.d.");
-                return false;
-            }
-
-            return true;
-        }
-
-        private async void GenerateYaml(object sender, RoutedEventArgs e)
-        {
-            var errors = new List<string>();
-
-            if (!VerifyAllFields(errors))
-            {
-                await ShowErrors(errors);
-                return;
-            }
-
-            var yaml = $@"Id: {txtId.Text}
-Publisher: {txtPublisher.Text}
-Name: {txtName.Text}
-Version: {txtVersion.Text}
-License: {txtLicense.Text}
-LicenseUrl: {txtLicenseUrl.Text}
-Installers:
-  - Arch: x64
-    Url: {txtInstallerUrlx64.Text}
-    InstallerType: {txtInstallerTypex64.Text}
-    Sha256: {txtInstallerHashx64.Text}";
-
-            var picker = new FileSavePicker();
-            picker.SuggestedFileName = "thomas.yaml";
-            picker.SuggestedStartLocation = PickerLocationId.Desktop;
-            picker.FileTypeChoices.Add("YAML file", new[] { ".yaml" });
-            var file = await picker.PickSaveFileAsync();
-            await FileIO.WriteTextAsync(file, yaml);
-            await (new MessageDialog("Success")).ShowAsync();
         }
 
         async Task ShowErrors(IList<string> errors)
@@ -243,37 +52,196 @@ Installers:
             await (new MessageDialog(builder.ToString(), "Errors in form")).ShowAsync();
         }
 
-        private async void DownloadAndCheckInstaller(object sender, RoutedEventArgs e)
+        private async void DownloadInstaller(object sender, RoutedEventArgs e)
         {
-            if (!Uri.TryCreate(txtInstallerUrlx64.Text, UriKind.Absolute, out var uri))
-            {
-                await (new MessageDialog($"'{txtInstallerUrlx64.Text}' is not a valid URL.", "Cannot download")).ShowAsync();
-                return;
-            }
+            var downloadButton = sender as Button;
+            var info = downloadButton.DataContext as InstallerInfo;
 
-            await (new MessageDialog("Your browser will launch to download the file.", "Downloading app")).ShowAsync();
-            await Launcher.LaunchUriAsync(uri);
+            try
+            {
+                downloadButton.IsEnabled = false;
+
+                if (info.Uri == null)
+                {
+                    return;
+                }
+
+                if (!info.Uri.IsWebUrl())
+                {
+                    await (new MessageDialog($"Cannot download from {info.Uri.AbsoluteUri}'.", "Cannot download")).ShowAsync();
+                    return;
+                }
+
+                await (new MessageDialog("Your default browser will launch to download the file.", "Downloading app")).ShowAsync();
+                await Launcher.LaunchUriAsync(info.Uri);
+            }
+            catch (Exception ex)
+            {
+                await (new MessageDialog($"Error trying to launch browser: {ex.Message}{Environment.NewLine}Maybe try again later?", "Error")).ShowAsync();
+            }
+            finally
+            {
+                downloadButton.IsEnabled = true;
+            }
         }
 
         private async void GenerateHashFromFile(object sender, RoutedEventArgs e)
         {
-            var picker = new FileOpenPicker();
-            picker.SuggestedStartLocation = PickerLocationId.Downloads;
-            picker.FileTypeFilter.Add("*");
-            picker.FileTypeFilter.Add(".msi");
-            picker.FileTypeFilter.Add(".msix");
-            picker.FileTypeFilter.Add(".exe");
-            var file = await picker.PickSingleFileAsync();
+            var generateButton = sender as Button;
+            var info = generateButton.DataContext as InstallerInfo;
 
-            if (file != null)
+            try
             {
-                var hasher = SHA256.Create();
-                using (var stream = await file.OpenStreamForReadAsync())
+                generateButton.IsEnabled = false;
+                var picker = new FileOpenPicker
                 {
-                    var hashBytes = hasher.ComputeHash(stream);
-                    var hashString = BitConverter.ToString(hashBytes).Replace("-", "");
-                    txtInstallerHashx64.Text = hashString;
+                    SuggestedStartLocation = PickerLocationId.Downloads
+                };
+                picker.FileTypeFilter.Add("*");
+                picker.FileTypeFilter.Add(".exe");
+                picker.FileTypeFilter.Add(".msi");
+                picker.FileTypeFilter.Add(".msix");
+                var file = await picker.PickSingleFileAsync();
+
+                if (file != null)
+                {
+                    var hasher = SHA256.Create();
+                    using (var stream = await file.OpenStreamForReadAsync())
+                    {
+                        var hashBytes = hasher.ComputeHash(stream);
+                        var hashString = BitConverter.ToString(hashBytes).Replace("-", "");
+                        info.Hash = hashString;
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                await (new MessageDialog($"Error trying to calculate hash: {ex.Message}{Environment.NewLine}Maybe try again later?", "Error")).ShowAsync();
+            }
+            finally
+            {
+                generateButton.IsEnabled = true;
+            }
+
+        }
+
+        private async void CompleteAddInstaller(object sender, RoutedEventArgs e)
+        {
+            var info = InstallerPopup.DataContext as InstallerInfo;
+
+            var errors = new List<string>();
+            if (!info.Verify(errors))
+            {
+                await ShowErrors(errors);
+                return;
+            }
+
+            AppInfo.Installers.Add(info);
+            InstallerPopup.Visibility = Visibility.Collapsed;
+        }
+
+        private void CancelAddInstaller(object sender, RoutedEventArgs e)
+        {
+            InstallerPopup.Visibility = Visibility.Collapsed;
+        }
+
+        private async void RemoveInstallerWithUI(object sender, RoutedEventArgs e)
+        {
+            var data = (sender as Button).DataContext as InstallerInfo;
+
+            var dialog = new MessageDialog($"Do you want to remove the {data.Architecture} installer?", "Confirm removal");
+            var delete = new UICommand("Yes");
+            var cancel = new UICommand("No");
+            dialog.Commands.Add(delete);
+            dialog.Commands.Add(cancel);
+
+            var result = await dialog.ShowAsync();
+            if (result != delete)
+            {
+                return;
+            }
+
+            AppInfo.Installers.Remove(data);
+        }
+
+        private void AddNewInstallerWithUI(object sender, RoutedEventArgs e)
+        {
+            var installer = new InstallerInfo
+            {
+                InstallerKind = AppInfo.InstallerKind
+            };
+
+            InstallerPopup.Visibility = Visibility.Visible;
+            InstallerPopup.DataContext = installer;
+        }
+
+        private async void SaveAsFile(object sender, RoutedEventArgs e)
+        {
+            var saveButton = sender as Button;
+
+            var errors = new List<string>();
+            if (!AppInfo.Verify(errors))
+            {
+                await ShowErrors(errors);
+                return;
+            }
+
+            try
+            {
+                saveButton.IsEnabled = false;
+                string yaml = AppInfo.GenerateYaml();
+                var picker = new FileSavePicker
+                {
+                    SuggestedFileName = $"{AppInfo.Version.ToCanonicalVersion().ToString(4)}.yaml",
+                    SuggestedStartLocation = PickerLocationId.Desktop
+                };
+                picker.FileTypeChoices.Add("YAML file", new[] { ".yaml" });
+                var file = await picker.PickSaveFileAsync();
+
+                if (file == null)
+                {
+                    return;
+                }
+
+                await FileIO.WriteTextAsync(file, yaml);
+                await (new MessageDialog($"Saved as {picker.SuggestedFileName}.", "Success")).ShowAsync();
+            }
+            catch (Exception ex)
+            {
+                await (new MessageDialog($"Error saving file: {ex.Message}{Environment.NewLine}{Environment.NewLine}Maybe try again later?", "Error")).ShowAsync();
+            }
+            finally
+            {
+                saveButton.IsEnabled = true;
+            }
+        }
+
+        private async void CopyToClipboard(object sender, RoutedEventArgs e)
+        {
+            var errors = new List<string>();
+            if (!AppInfo.Verify(errors))
+            {
+                await ShowErrors(errors);
+                return;
+            }
+
+            var copyButton = sender as Button;
+            try
+            {
+                copyButton.IsEnabled = false;
+                string yaml = AppInfo.GenerateYaml();
+
+                DataPackage package = new DataPackage();
+                package.SetText(yaml);
+                Clipboard.SetContent(package);
+            }
+            catch (Exception ex)
+            {
+                await (new MessageDialog($"Error copying to clipboard: {ex.Message}{Environment.NewLine}{Environment.NewLine}Maybe try again later?", "Error")).ShowAsync();
+            }
+            finally
+            {
+                copyButton.IsEnabled = true;
             }
         }
     }

@@ -7,78 +7,220 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    FontSize="15" Height="490" Width="780">
+    FontSize="15" d:DesignWidth="780" d:DesignHeight="700">
+    <Page.Resources>
+        <ResourceDictionary>
+            <local:ArchitectureValueConverter x:Key="ArchitectureValueConverter"/>
+            <local:InstallerKindValueConverter x:Key="InstallerKindValueConverter"/>
+            <local:VersionValueConverter x:Key="VersionValueConverter"/>
+            <local:UriValueConverter x:Key="UriValueConverter"/>
+        </ResourceDictionary>
+    </Page.Resources>
 
-    <Grid Margin="12">
-        <StackPanel>
-            <TextBlock Text="WinGet YAML Generator, for Thomas with 💗" FontSize="20" FontWeight="Bold" Margin="0,10" HorizontalAlignment="Center"/>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <!--ID-->
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="ID:" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <TextBox Grid.Row="0" Grid.Column="1" x:Name="txtId" HorizontalAlignment="Stretch" Margin="0,5"/>
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" x:DefaultBindMode="TwoWay">
+        <ScrollViewer>
+            <Grid Margin="12">
+                <StackPanel>
+                    <TextBlock Text="WinGet YAML Generator, with 💗" FontSize="20" FontWeight="Bold" Margin="0,10" HorizontalAlignment="Center"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
 
-                <!--Publisher-->
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="Publisher:" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <TextBox Grid.Row="1" Grid.Column="1" x:Name="txtPublisher" HorizontalAlignment="Stretch" Margin="0,5"/>
+                        <!--Name-->
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Name:" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <TextBox Grid.Row="0" Grid.Column="1" Text="{x:Bind AppInfo.Name}" HorizontalAlignment="Stretch" Margin="0,5" AccessKey="N" />
+                        <TextBlock Grid.Row="0" Grid.Column="2" Text="*" Foreground="Red" Margin="5,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
-                <!--Name-->
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="Name:" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <TextBox Grid.Row="2" Grid.Column="1" x:Name="txtName" HorizontalAlignment="Stretch" Margin="0,5"/>
+                        <!--Publisher-->
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Publisher:" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <TextBox Grid.Row="1" Grid.Column="1" Text="{x:Bind AppInfo.Publisher}" HorizontalAlignment="Stretch" Margin="0,5" AccessKey="P"/>
+                        <TextBlock Grid.Row="1" Grid.Column="2" Text="*" Foreground="Red" Margin="5,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
-                <!--Version-->
-                <TextBlock Grid.Row="3" Grid.Column="0" Text="Version:" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <TextBox Grid.Row="3" Grid.Column="1" x:Name="txtVersion" HorizontalAlignment="Stretch" Margin="0,5"/>
+                        <!--ID-->
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="ID:" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <Grid Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Grid.Row="0" Grid.Column="0" Text="{x:Bind AppInfo.Id}" AccessKey="I"/>
+                            <Button Grid.Row="0" Grid.Column="1" Content="I'm feeling lucky" Click="{x:Bind AppInfo.GenerateSuggestedAppId}" Margin="5,0,0,0" AccessKey="Y"/>
+                        </Grid>
+                        <TextBlock Grid.Row="2" Grid.Column="2" Text="*" Foreground="Red" Margin="5,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
-                <!--License-->
-                <TextBlock Grid.Row="4" Grid.Column="0" Text="License:" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <TextBox Grid.Row="4" Grid.Column="1" x:Name="txtLicense" HorizontalAlignment="Stretch" Margin="0,5"/>
+                        <!--Moniker-->
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Alternate name:" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <TextBox Grid.Row="3" Grid.Column="1" Text="{x:Bind AppInfo.Moniker}" HorizontalAlignment="Stretch" Margin="0,5" AccessKey="E"/>
 
-                <!--License URL-->
-                <TextBlock Grid.Row="5" Grid.Column="0" Text="License URL:" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <TextBox Grid.Row="5" Grid.Column="1" x:Name="txtLicenseUrl" HorizontalAlignment="Stretch" Margin="0,5"/>
+                        <!--Keywords-->
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Tags (keywords):" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <TextBox Grid.Row="4" Grid.Column="1" Text="{x:Bind AppInfo.Tags}" HorizontalAlignment="Stretch" Margin="0,5" AccessKey="T"/>
 
-                <!--x64 Installer-->
-                <TextBlock Grid.Row="6" Grid.Column="0" Text="Installer URL (x64):" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <Grid Grid.Row="6" Grid.Column="1" >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBox Grid.Row="0" Grid.Column="0" x:Name="txtInstallerUrlx64" HorizontalAlignment="Stretch" Margin="0,5"/>
-                    <Button Content="Download" Grid.Row="0" Grid.Column="1" Margin="5,0,0,0" Click="DownloadAndCheckInstaller"/>
-                </Grid>
+                        <!--Description-->
+                        <TextBlock Grid.Row="5" Grid.Column="0" Text="Description:" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <TextBox Grid.Row="5" Grid.Column="1" Text="{x:Bind AppInfo.Description}" HorizontalAlignment="Stretch" Margin="0,5" AccessKey="D"/>
 
-                <!--Installer Type-->
-                <TextBlock Grid.Row="7" Grid.Column="0" Text="Installer Type (x64):" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <TextBox Grid.Row="7" Grid.Column="1" x:Name="txtInstallerTypex64" HorizontalAlignment="Stretch" Margin="0,5"/>
+                        <!--Homepage-->
+                        <TextBlock Grid.Row="6" Grid.Column="0" Text="Homepage:" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <TextBox Grid.Row="6" Grid.Column="1" Text="{x:Bind AppInfo.Homepage, Converter={StaticResource UriValueConverter}}" HorizontalAlignment="Stretch" Margin="0,5" AccessKey="H"/>
 
-                <!--x64 Hash-->
-                <TextBlock Grid.Row="8" Grid.Column="0" Text="Installer SHA256 Hash (x64):" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <Grid Grid.Row="8" Grid.Column="1" >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBox Grid.Row="0" Grid.Column="0" x:Name="txtInstallerHashx64" HorizontalAlignment="Stretch" Margin="0,5"/>
-                    <Button Content="Generate" Grid.Row="0" Grid.Column="1" Margin="5,0,0,0" Click="GenerateHashFromFile"/>
-                </Grid>
+                        <!--Version-->
+                        <TextBlock Grid.Row="7" Grid.Column="0" Text="Version:" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <TextBox Grid.Row="7" Grid.Column="1" Text="{x:Bind AppInfo.Version, Converter={StaticResource VersionValueConverter}}" HorizontalAlignment="Stretch" Margin="0,5" AccessKey="V" />
+                        <TextBlock Grid.Row="7" Grid.Column="2" Text="*" Foreground="Red" Margin="5,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                        <!--License-->
+                        <TextBlock Grid.Row="8" Grid.Column="0" Text="License:" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <TextBox Grid.Row="8" Grid.Column="1" Text="{x:Bind AppInfo.License}" HorizontalAlignment="Stretch" Margin="0,5" AccessKey="L"/>
+                        <TextBlock Grid.Row="8" Grid.Column="2" Text="*" Foreground="Red" Margin="5,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                        <!--License URL-->
+                        <TextBlock Grid.Row="9" Grid.Column="0" Text="License URL:" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <TextBox Grid.Row="9" Grid.Column="1" Text="{x:Bind AppInfo.LicenseUri, Converter={StaticResource UriValueConverter}}" HorizontalAlignment="Stretch" Margin="0,5" AccessKey="U"/>
+
+                        <!--Installer Type-->
+                        <TextBlock Grid.Row="10" Grid.Column="0" Text="Installer Type:" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <ComboBox Grid.Row="10" Grid.Column="1" SelectedIndex="{x:Bind AppInfo.InstallerKind, Converter={StaticResource InstallerKindValueConverter}}" Margin="0,5" HorizontalAlignment="Stretch" AccessKey="P">
+                            <ComboBox.Items>
+                                <x:String>EXE</x:String>
+                                <x:String>MSI</x:String>
+                                <x:String>MSIX</x:String>
+                            </ComboBox.Items>
+                        </ComboBox>
+                        <TextBlock Grid.Row="10" Grid.Column="2" Text="*" Foreground="Red" Margin="5,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                        <!-- Installers -->
+                        <TextBlock Grid.Row="11" Grid.Column="0" Text="Installers:" Margin="0,5,5,0" HorizontalAlignment="Right" VerticalAlignment="Top" />
+                        <Grid Grid.Row="11" Grid.Column="1" Margin="0,5" Height="100">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <ListView Grid.Column="0" BorderBrush="{ThemeResource TextControlBorderBrush}" BorderThickness="{ThemeResource TextControlBorderThemeThickness}" ItemsSource="{x:Bind AppInfo.Installers}" AccessKey="Z">
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem">
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate x:DataType="local:InstallerInfo">
+                                        <Grid Margin="0,5,0,0" HorizontalAlignment="Stretch">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="{x:Bind DisplayName, Mode=OneWay}" VerticalAlignment="Center"/>
+                                            <Button Grid.Column="1" Content="X" Click="RemoveInstallerWithUI" Margin="5,0,0,0"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                            <Button Grid.Column="1" Content="Add" VerticalAlignment="Top" Margin="5,0,0,0" Click="AddNewInstallerWithUI" AccessKey="A"/>
+                        </Grid>
+                        <TextBlock Grid.Row="11" Grid.Column="2" Text="*" Foreground="Red" Margin="5,5,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" />
+
+                        <!--Save-->
+                        <StackPanel Orientation="Horizontal"  Grid.Row="12" Grid.ColumnSpan="3" Margin="0,20,0,0" HorizontalAlignment="Center">
+                            <Button Content="Save as..." Click="SaveAsFile" AccessKey="S" />
+                            <Button Content="Copy to clipboard" Click="CopyToClipboard" Margin="5,0,0,0" AccessKey="C"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
             </Grid>
-            <Button Content="Save as YAML file" Click="GenerateYaml" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,10" />
-        </StackPanel>
+
+        </ScrollViewer>
+
+        <Border Background="#88888888" x:Name="InstallerPopup" Visibility="Collapsed" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Border BorderBrush="{ThemeResource ButtonBorderThemeBrush}" BorderThickness="{StaticResource ButtonBorderThemeThickness}" 
+                Padding="10" Margin="30,10" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!--Title-->
+                    <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5" Text="Installer details..." FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
+
+                    <!--Architecture and Type-->
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Architecture:" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    <ComboBox Grid.Row="1" Grid.Column="1" SelectedIndex="{Binding Architecture, Converter={StaticResource ArchitectureValueConverter}, Mode=TwoWay}" AccessKey="R">
+                        <ComboBox.Items>
+                            <x:String>x86</x:String>
+                            <x:String>x64</x:String>
+                            <x:String>ARM</x:String>
+                            <x:String>ARM64</x:String>
+                        </ComboBox.Items>
+                    </ComboBox>
+                    <TextBlock Grid.Row="1" Grid.Column="2" Text="Installer Type:" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    <ComboBox Grid.Row="1" Grid.Column="3" SelectedIndex="{Binding InstallerKind, Converter={StaticResource InstallerKindValueConverter}, Mode=TwoWay}" AccessKey="M">
+                        <ComboBox.Items>
+                            <x:String>EXE</x:String>
+                            <x:String>MSI</x:String>
+                            <x:String>MSIX</x:String>
+                        </ComboBox.Items>
+                    </ComboBox>
+                    <TextBlock Grid.Row="1" Grid.Column="4" Text="*" Foreground="Red" Margin="5,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                    <!--URL-->
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="URL:" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    <Grid Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding Uri, Mode=TwoWay, Converter={StaticResource UriValueConverter}}" HorizontalAlignment="Stretch" Margin="0,5" AccessKey="X"/>
+                        <Button Content="Download" Grid.Row="0" Grid.Column="1" Margin="5,0,0,0" Click="DownloadInstaller" AccessKey="O"/>
+                    </Grid>
+                    <TextBlock Grid.Row="2" Grid.Column="4" Text="*" Foreground="Red" Margin="5,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                    <!--Hash-->
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="SHA256 Hash:" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    <Grid Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding Hash, Mode=TwoWay}" HorizontalAlignment="Stretch" Margin="0,5" AccessKey="Q"/>
+                        <Button Content="Generate" Grid.Row="0" Grid.Column="1" Margin="5,0,0,0" Click="GenerateHashFromFile" AccessKey="G"/>
+                    </Grid>
+                    <TextBlock Grid.Row="3" Grid.Column="4" Text="*" Foreground="Red" Margin="5,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                    <!--Buttons-->
+                    <StackPanel Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                        <Button Content="Add" Click="CompleteAddInstaller" Width="80" AccessKey="J"/>
+                        <Button Content="Cancel" Margin="5,0,0,0" Click="CancelAddInstaller" Width="80" AccessKey="K"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Border>
     </Grid>
 </Page>
