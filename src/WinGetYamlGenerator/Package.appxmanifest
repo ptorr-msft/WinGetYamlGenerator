@@ -7,15 +7,15 @@
   IgnorableNamespaces="uap mp">
 
   <Identity
-    Name="Peter.WinGetYamlGenerator"
+    Name="PeterTorr.WinGetYamlGenerator"
     Publisher="CN=Testing only - do not trust from the interwebs"
-    Version="1.0.5.0" />
+    Version="1.0.3.0" />
 
   <mp:PhoneIdentity PhoneProductId="442587c2-3d24-49df-bbf7-de8b4f770356" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
     <DisplayName>Winget YAML Generator</DisplayName>
-    <PublisherDisplayName>Peter</PublisherDisplayName>
+    <PublisherDisplayName>Peter Torr</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
@@ -38,7 +38,7 @@
         Description="Simple app to generate YAML for Winget manifests."
         BackgroundColor="transparent">
         <uap:DefaultTile Square71x71Logo="Assets\SmallTile.png" />
-        <uap:SplashScreen Image="Assets\SplashScreen.png" />
+        <uap:SplashScreen Image="Assets\SplashScreen.png"  BackgroundColor="#7aeafc"/>
       </uap:VisualElements>
     </Application>
   </Applications>
