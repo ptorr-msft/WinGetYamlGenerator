@@ -7,14 +7,14 @@
   IgnorableNamespaces="uap mp">
 
   <Identity
-    Name="PeterTorr.WinGetYamlGenerator"
-    Publisher="CN=Testing only - do not trust from the interwebs"
-    Version="1.0.3.0" />
+    Name="62961PeterTorr.WinGetYAMLGenerator"
+    Publisher="CN=5EAA07D0-F3FF-4F06-BFFD-CBF8E9CFF10E"
+    Version="1.0.0.0" />
 
-  <mp:PhoneIdentity PhoneProductId="442587c2-3d24-49df-bbf7-de8b4f770356" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="dfe3d613-a9ac-4423-8949-3717405f782f" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>Winget YAML Generator</DisplayName>
+    <DisplayName>WinGet YAML Generator</DisplayName>
     <PublisherDisplayName>Peter Torr</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -32,7 +32,7 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="WinGetYamlGenerator.App">
       <uap:VisualElements
-        DisplayName="Winget YAML Generator"
+        DisplayName="WinGet YAML Generator"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png"
         Description="Simple app to generate YAML for Winget manifests."
