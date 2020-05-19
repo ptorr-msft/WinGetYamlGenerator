@@ -9,12 +9,12 @@
   <Identity
     Name="62961PeterTorr.WinGetYAMLGenerator"
     Publisher="CN=5EAA07D0-F3FF-4F06-BFFD-CBF8E9CFF10E"
-    Version="1.0.0.0" />
+    Version="1.1.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="dfe3d613-a9ac-4423-8949-3717405f782f" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>WinGet YAML Generator</DisplayName>
+    <DisplayName>Windows Package Manager YAML Generator</DisplayName>
     <PublisherDisplayName>Peter Torr</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -32,10 +32,10 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="WinGetYamlGenerator.App">
       <uap:VisualElements
-        DisplayName="WinGet YAML Generator"
+        DisplayName="Windows Package Manager YAML Generator"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png"
-        Description="Simple app to generate YAML for Winget manifests."
+        Description="Simple app to generate YAML for Windows Package Manager manifests."
         BackgroundColor="transparent">
         <uap:DefaultTile Square71x71Logo="Assets\SmallTile.png" />
         <uap:SplashScreen Image="Assets\SplashScreen.png"  BackgroundColor="#7aeafc"/>

@@ -13,7 +13,7 @@ namespace WinGetYamlGenerator
                 return value;
             }
 
-            return value.ToString();
+            return (value as Uri).AbsoluteUri;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)
