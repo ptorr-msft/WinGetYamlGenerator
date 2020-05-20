@@ -154,10 +154,10 @@
             </ScrollViewer>
 
             <ContentDialog x:Name="InstallerPopup" HorizontalContentAlignment="Stretch" Title="Installer details"
-                           PrimaryButtonText="Add" CloseButtonText="Cancel" PrimaryButtonClick="CompleteAddInstaller" Visibility="Visible" >
+                           PrimaryButtonText="Add" CloseButtonText="Cancel" PrimaryButtonClick="CompleteAddInstaller" Visibility="Visible"  >
               
                 <ContentDialog.Content>
-                    <Grid HorizontalAlignment="Stretch">
+                    <Grid HorizontalAlignment="Stretch" Width="480">
                         <Grid.RowDefinitions>
                             <RowDefinition/>
                             <RowDefinition/>
