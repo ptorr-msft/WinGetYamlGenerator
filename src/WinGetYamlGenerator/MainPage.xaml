@@ -103,7 +103,7 @@
 
                             <!--Installer Type-->
                             <TextBlock Grid.Row="10" Grid.Column="0" Text="Installer Type:" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                            <ComboBox Grid.Row="10" Grid.Column="1" SelectedIndex="{x:Bind AppInfo.InstallerKind, Converter={StaticResource InstallerKindValueConverter}}" Margin="0,5" HorizontalAlignment="Stretch" AccessKey="P">
+                            <ComboBox Grid.Row="10" Grid.Column="1" SelectedIndex="{x:Bind AppInfo.InstallerKind, Converter={StaticResource InstallerKindValueConverter}}" Margin="0,5" HorizontalAlignment="Stretch" AccessKey="Q">
                                 <ComboBox.Items>
                                     <x:String>EXE</x:String>
                                     <x:String>MSI</x:String>
@@ -115,9 +115,6 @@
                             <!-- Installers -->
                             <TextBlock Grid.Row="11" Grid.Column="0" Text="Installers:" Margin="0,5,5,0" HorizontalAlignment="Right" VerticalAlignment="Top" />
                             <Grid Grid.Row="11" Grid.Column="1" Margin="0,5" Height="100">
-                                <Grid.Resources>
-                                    <ResourceDictionary Source="ms-appx:///Microsoft.UI.Xaml/DensityStyles/Compact.xaml" />
-                                </Grid.Resources>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto"/>
@@ -132,7 +129,7 @@
                                         <DataTemplate x:DataType="local:InstallerInfo" >
                                           <Grid HorizontalAlignment="Stretch">
                                               <TextBlock Text="{x:Bind DisplayName, Mode=OneWay}" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                                              <AppBarButton Icon="Delete" Label="Delete" Click="RemoveInstallerWithUI"  HorizontalAlignment="Right" />
+                                              <AppBarButton Icon="Delete" Label="Delete" Click="RemoveInstallerWithUI"  HorizontalAlignment="Right" LabelPosition="Collapsed" />
                                           </Grid>
                                         </DataTemplate>
                                     </ListView.ItemTemplate>
