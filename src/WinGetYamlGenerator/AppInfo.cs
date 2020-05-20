@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ServiceModel.Security;
 using System.Text.RegularExpressions;
-
-using Windows.Foundation.Diagnostics;
 
 namespace WinGetYamlGenerator
 {
@@ -94,7 +91,7 @@ namespace WinGetYamlGenerator
             set => Set(value, ref installerKind);
         }
 
-        public ObservableCollection<InstallerInfo> Installers { get; set; } = new ObservableCollection<InstallerInfo>();
+        public ObservableCollection<InstallerInfo> Installers { get; } = new ObservableCollection<InstallerInfo>();
 
         public bool Verify(IList<string> errors)
         {
@@ -265,7 +262,12 @@ namespace WinGetYamlGenerator
 
         public void GenerateSuggestedAppId()
         {
-            var suggestion = publisher + "." + name;
+            if (string.IsNullOrEmpty(publisher) || string.IsNullOrEmpty(name))
+            {
+                return;
+            }
+
+            var suggestion = $"{publisher}.{name}";
             suggestion = suggestion.ToLowerInvariant();
             var badChars = new Regex(@"[^\w]+");
 
@@ -328,20 +330,20 @@ InstallerType: {InstallerKind}
 
         private void FillInTestData()
         {
-            Name = "Test McTestFace 2000";
-            Publisher = "Contoso® Inc";
+            Name = "Windows Package Manager YAML Generator";
+            Publisher = "Peter Torr";
             GenerateSuggestedAppId();
-            Moniker = "mctesty";
-            Tags = "test; contoso; awesome";
-            Description = "The best app you'll ever use.";
-            Homepage = new Uri("https://www.contoso.com/homepage");
-            Version = new Version(0,1);
+            Moniker = "winget package generator";
+            Tags = "winget;yaml";
+            Description = "Generates YAML for the Windows Package Manager.";
+            Homepage = new Uri("https://github.com/ptorr-msft/WinGetYamlGenerator");
+            Version = App.CurrentVersion;
             License = "MIT";
-            LicenseUri = new Uri("https://www.example.com/license");
+            LicenseUri = new Uri("https://github.com/ptorr-msft/WinGetYamlGenerator/blob/master/LICENSE");
             InstallerKind = InstallerKind.MSIX;
 
-            Installers.Add(new InstallerInfo { Architecture = ArchitectureKind.x86, Uri = new Uri("http://www.contoso.com/x86"), Hash = new String('A', 64), InstallerKind = InstallerKind.MSIX });
-            Installers.Add(new InstallerInfo { Architecture = ArchitectureKind.x64, Uri = new Uri("http://www.contoso.com/x64"), Hash = new string('B', 64), InstallerKind = InstallerKind.EXE });
+            Installers.Add(new InstallerInfo { Architecture = ArchitectureKind.x86, Uri = new Uri("http://www.contoso.com/download/x86"), Hash = new string('A', 64), InstallerKind = InstallerKind.MSIX });
+            Installers.Add(new InstallerInfo { Architecture = ArchitectureKind.x64, Uri = new Uri("http://www.contoso.com/download/x64"), Hash = new string('B', 64), InstallerKind = InstallerKind.EXE });
         }
     }
 }

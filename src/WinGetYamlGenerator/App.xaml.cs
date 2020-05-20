@@ -1,18 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
+
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 namespace WinGetYamlGenerator
@@ -28,9 +20,57 @@ namespace WinGetYamlGenerator
         /// </summary>
         public App()
         {
-            this.InitializeComponent();
-            this.Suspending += OnSuspending;
+            InitializeComponent();
+            Suspending += OnSuspending;
+
+            try
+            {
+                InitVersionInfo();
+            }
+            catch (Exception ex)
+            {
+                InitError = ex.ToString();
+            }
         }
+
+        internal static string InitError { get; private set; }
+
+        static readonly string installedVersionKeyName = "installedVersion";
+
+        private static void InitVersionInfo()
+        {
+            var packageVersion = Package.Current.Id.Version;
+            CurrentVersion = new Version(packageVersion.Major, packageVersion.Minor, packageVersion.Build, packageVersion.Revision);
+
+            var settings = ApplicationData.Current.LocalSettings;
+
+            if (!settings.Values.TryGetValue(installedVersionKeyName, out var installedVersionSetting))
+            {
+                // No previous version; not an upgrade
+                IsUpgrade = false;
+                OldVersion = new Version(0, 0, 0, 0);
+            }
+            else
+            {
+                if (!Version.TryParse((string)installedVersionSetting, out var installedVersion))
+                {
+                    // Something wrong? Assume upgrade from v1.
+                    IsUpgrade = true;
+                    OldVersion = new Version(1, 0, 0, 0);
+                }
+                else
+                {
+                    OldVersion = installedVersion;
+                    IsUpgrade = installedVersion < CurrentVersion;
+                }
+            }
+
+            settings.Values[installedVersionKeyName] = CurrentVersion.ToString();
+        }
+
+        public static bool IsUpgrade { get; private set; }
+        public static Version OldVersion { get; private set; }
+        public static Version CurrentVersion { get; private set; }
 
         /// <summary>
         /// Invoked when the application is launched normally by the end user.  Other entry points

@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
-using System.ServiceModel.Channels;
 using System.Text;
 using System.Threading.Tasks;
 
-using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.ApplicationModel.Store.Preview.InstallControl;
 using Windows.Foundation;
-using Windows.Networking.BackgroundTransfer;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.System;
@@ -18,7 +16,6 @@ using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -27,18 +24,40 @@ namespace WinGetYamlGenerator
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MainPage : Page
+    public sealed partial class MainPage : Page, INotifyPropertyChanged
     {
         internal AppInfo AppInfo { get; } = new AppInfo();
+
+        InstallerInfo currentlyEditingInstallerInfo;
+        internal InstallerInfo CurrentlyEditingInstallerInfo
+        {
+            get => currentlyEditingInstallerInfo;
+            set
+            {
+                currentlyEditingInstallerInfo = value; RaisePropertyChanged();
+            }
+        }
 
         public MainPage()
         {
             InitializeComponent();
             InstallerPopup.Visibility = Visibility.Collapsed;
 
-            ApplicationView.PreferredLaunchViewSize = new Size(780, 700);
+            ApplicationView.PreferredLaunchViewSize = new Size(780, 725);
             ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
+
+            if (!string.IsNullOrEmpty(App.InitError))
+            {
+                (new MessageDialog(App.InitError, "Startup error")).ShowAsync();
+            }
         }
+
+        void RaisePropertyChanged([CallerMemberName] string name = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         async Task ShowErrors(IList<string> errors)
         {
@@ -55,25 +74,23 @@ namespace WinGetYamlGenerator
         private async void DownloadInstaller(object sender, RoutedEventArgs e)
         {
             var downloadButton = sender as Button;
-            var info = downloadButton.DataContext as InstallerInfo;
-
             try
             {
                 downloadButton.IsEnabled = false;
 
-                if (info.Uri == null)
+                if (CurrentlyEditingInstallerInfo.Uri == null)
                 {
                     return;
                 }
 
-                if (!info.Uri.IsWebUrl())
+                if (!CurrentlyEditingInstallerInfo.Uri.IsWebUrl())
                 {
-                    await (new MessageDialog($"Cannot download from {info.Uri.AbsoluteUri}'.", "Cannot download")).ShowAsync();
+                    await (new MessageDialog($"Cannot download from {CurrentlyEditingInstallerInfo.Uri.AbsoluteUri}'.", "Cannot download")).ShowAsync();
                     return;
                 }
 
                 await (new MessageDialog("Your default browser will launch to download the file.", "Downloading app")).ShowAsync();
-                await Launcher.LaunchUriAsync(info.Uri);
+                await Launcher.LaunchUriAsync(CurrentlyEditingInstallerInfo.Uri);
             }
             catch (Exception ex)
             {
@@ -88,7 +105,6 @@ namespace WinGetYamlGenerator
         private async void GenerateHashFromFile(object sender, RoutedEventArgs e)
         {
             var generateButton = sender as Button;
-            var info = generateButton.DataContext as InstallerInfo;
 
             try
             {
@@ -110,7 +126,7 @@ namespace WinGetYamlGenerator
                     {
                         var hashBytes = hasher.ComputeHash(stream);
                         var hashString = BitConverter.ToString(hashBytes).Replace("-", "");
-                        info.Hash = hashString;
+                        CurrentlyEditingInstallerInfo.Hash = hashString;
                     }
                 }
             }
@@ -127,16 +143,15 @@ namespace WinGetYamlGenerator
 
         private async void CompleteAddInstaller(object sender, RoutedEventArgs e)
         {
-            var info = InstallerPopup.DataContext as InstallerInfo;
-
             var errors = new List<string>();
-            if (!info.Verify(errors))
+            if (!CurrentlyEditingInstallerInfo.Verify(errors))
             {
                 await ShowErrors(errors);
                 return;
             }
 
-            AppInfo.Installers.Add(info);
+            AppInfo.Installers.Add(CurrentlyEditingInstallerInfo);
+            CurrentlyEditingInstallerInfo = null;
             InstallerPopup.Visibility = Visibility.Collapsed;
         }
 
@@ -172,7 +187,7 @@ namespace WinGetYamlGenerator
             };
 
             InstallerPopup.Visibility = Visibility.Visible;
-            InstallerPopup.DataContext = installer;
+            CurrentlyEditingInstallerInfo = installer;
         }
 
         private async void SaveAsFile(object sender, RoutedEventArgs e)
@@ -244,5 +259,7 @@ namespace WinGetYamlGenerator
                 copyButton.IsEnabled = true;
             }
         }
+
+        public string CurrentVersion => $"v{App.CurrentVersion}";
     }
 }
