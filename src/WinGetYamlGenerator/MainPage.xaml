@@ -26,7 +26,7 @@
             <ScrollViewer x:Name="MainContentScrollViewer">
                 <Grid Margin="10">
                     <StackPanel>
-                        <TextBlock Text="Windows Package Manager YAML Generator, with 💗" FontSize="20" FontWeight="Bold" Margin="0,10" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Windows Package Manager YAML Generator, with 💗" FontSize="20" FontWeight="SemiBold" Margin="0,10" HorizontalAlignment="Center"/>
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
