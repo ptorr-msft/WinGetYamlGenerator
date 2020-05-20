@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:WinGetYamlGenerator"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:Windows10version1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     FontSize="15" d:DesignWidth="780" d:DesignHeight="725">
@@ -115,30 +115,29 @@
                             <!-- Installers -->
                             <TextBlock Grid.Row="11" Grid.Column="0" Text="Installers:" Margin="0,5,5,0" HorizontalAlignment="Right" VerticalAlignment="Top" />
                             <Grid Grid.Row="11" Grid.Column="1" Margin="0,5" Height="100">
+                                <Grid.Resources>
+                                    <ResourceDictionary Source="ms-appx:///Microsoft.UI.Xaml/DensityStyles/Compact.xaml" />
+                                </Grid.Resources>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-                                <ListView Grid.Column="0" BorderBrush="{ThemeResource TextControlBorderBrush}" BorderThickness="{ThemeResource TextControlBorderThemeThickness}" ItemsSource="{x:Bind AppInfo.Installers, Mode=OneTime}" AccessKey="Z">
+                                <ListView Grid.Column="0" BorderBrush="{ThemeResource TextBoxBorderThemeBrush}" BorderThickness="{ThemeResource TextControlBorderThemeThickness}" ItemsSource="{x:Bind AppInfo.Installers, Mode=OneTime}" AccessKey="Z" Windows10version1809:CornerRadius="2">
                                     <ListView.ItemContainerStyle>
                                         <Style TargetType="ListViewItem">
                                             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                                         </Style>
                                     </ListView.ItemContainerStyle>
-                                    <ListView.ItemTemplate>
-                                        <DataTemplate x:DataType="local:InstallerInfo">
-                                            <Grid Margin="0,5,0,0" HorizontalAlignment="Stretch">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-                                                <TextBlock Grid.Column="0" Text="{x:Bind DisplayName, Mode=OneWay}" VerticalAlignment="Center"/>
-                                                <Button Grid.Column="1" Content="X" Click="RemoveInstallerWithUI" Margin="5,0,0,0"/>
-                                            </Grid>
+                                    <ListView.ItemTemplate >
+                                        <DataTemplate x:DataType="local:InstallerInfo" >
+                                          <Grid HorizontalAlignment="Stretch">
+                                              <TextBlock Text="{x:Bind DisplayName, Mode=OneWay}" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                              <AppBarButton Icon="Delete" Label="Delete" Click="RemoveInstallerWithUI"  HorizontalAlignment="Right" />
+                                          </Grid>
                                         </DataTemplate>
                                     </ListView.ItemTemplate>
                                 </ListView>
-                                <Button Grid.Column="1" Content="Add" VerticalAlignment="Top" Margin="5,0,0,0" Click="AddNewInstallerWithUI" AccessKey="A"/>
+                                <Button Grid.Column="1" Content="Add" VerticalAlignment="Top" Margin="5,0,0,0" Click="AddNewInstallerWithUi" AccessKey="A"/>
                             </Grid>
                             <TextBlock Grid.Row="11" Grid.Column="2" Text="*" Foreground="Red" Margin="5,5,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" />
 
@@ -154,80 +153,76 @@
 
             </ScrollViewer>
 
-            <Border Background="#88888888" x:Name="InstallerPopup" Visibility="Collapsed" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <Border BorderBrush="{ThemeResource ButtonBorderThemeBrush}" BorderThickness="{StaticResource ButtonBorderThemeThickness}" 
-                Padding="10" Margin="30,10" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
-                    <Grid>
+            <ContentDialog x:Name="InstallerPopup" HorizontalContentAlignment="Stretch" Title="Installer details"
+                           PrimaryButtonText="Add" CloseButtonText="Cancel" PrimaryButtonClick="CompleteAddInstaller" Visibility="Collapsed" >
+              
+                <ContentDialog.Content>
+                    <Grid HorizontalAlignment="Stretch">
                         <Grid.RowDefinitions>
                             <RowDefinition/>
                             <RowDefinition/>
                             <RowDefinition/>
                             <RowDefinition/>
-                            <RowDefinition/>
+                            <RowDefinition MinHeight="0" Height="0" x:Name="ErrorPanelRow"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <!--Title-->
-                        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5" Text="Installer details..." FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
-
                         <!--Architecture and Type-->
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Architecture:" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                        <ComboBox Grid.Row="1" Grid.Column="1" SelectedIndex="{x:Bind CurrentlyEditingInstallerInfo.Architecture, Converter={StaticResource ArchitectureValueConverter}}" AccessKey="R">
-                            <ComboBox.Items>
-                                <x:String>x86</x:String>
-                                <x:String>x64</x:String>
-                                <x:String>ARM</x:String>
-                                <x:String>ARM64</x:String>
-                            </ComboBox.Items>
-                        </ComboBox>
-                        <TextBlock Grid.Row="1" Grid.Column="2" Text="Installer Type:" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                        <ComboBox Grid.Row="1" Grid.Column="3" SelectedIndex="{x:Bind CurrentlyEditingInstallerInfo.InstallerKind, Converter={StaticResource InstallerKindValueConverter}}" AccessKey="M">
-                            <ComboBox.Items>
-                                <x:String>EXE</x:String>
-                                <x:String>MSI</x:String>
-                                <x:String>MSIX</x:String>
-                            </ComboBox.Items>
-                        </ComboBox>
-                        <TextBlock Grid.Row="1" Grid.Column="4" Text="*" Foreground="Red" Margin="5,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+                            <ComboBox SelectedIndex="{x:Bind CurrentlyEditingInstallerInfo.Architecture, Converter={StaticResource ArchitectureValueConverter}}" AccessKey="R" Header="Architecture" Margin="0,0,20,0">
+                                <ComboBox.Items>
+                                    <x:String>x86</x:String>
+                                    <x:String>x64</x:String>
+                                    <x:String>ARM</x:String>
+                                    <x:String>ARM64</x:String>
+                                </ComboBox.Items>
+                            </ComboBox>
+                            <ComboBox SelectedIndex="{x:Bind CurrentlyEditingInstallerInfo.InstallerKind, Converter={StaticResource InstallerKindValueConverter}}" AccessKey="M" Header="Installer type" >
+                                <ComboBox.Items>
+                                    <x:String>EXE</x:String>
+                                    <x:String>MSI</x:String>
+                                    <x:String>MSIX</x:String>
+                                </ComboBox.Items>
+                            </ComboBox>
+                        </StackPanel>
 
                         <!--URL-->
-                        <TextBlock Grid.Row="2" Grid.Column="0" Text="URL:" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                        <Grid Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" >
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBox Grid.Row="0" Grid.Column="0" Text="{x:Bind CurrentlyEditingInstallerInfo.Uri, Converter={StaticResource UriValueConverter}}" HorizontalAlignment="Stretch" Margin="0,5" AccessKey="X"/>
-                            <Button Content="Download" Grid.Row="0" Grid.Column="1" Margin="5,0,0,0" Click="DownloadInstaller" AccessKey="O"/>
-                        </Grid>
-                        <TextBlock Grid.Row="2" Grid.Column="4" Text="*" Foreground="Red" Margin="5,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBox Grid.Row="2" Grid.Column="0" Text="{x:Bind CurrentlyEditingInstallerInfo.Uri, Converter={StaticResource UriValueConverter}}" HorizontalAlignment="Stretch" Margin="0,5" AccessKey="X" Header="URL"/>
+                        <Button Content="Download" Grid.Row="2" Grid.Column="1" Margin="5,23,0,0" Click="DownloadInstaller" AccessKey="O" HorizontalAlignment="Stretch" />
+
+                        <TextBlock Grid.Row="2" Grid.Column="2" Text="*" Foreground="Red" Margin="5,23,5,0" HorizontalAlignment="Center" VerticalAlignment="Center" />
 
                         <!--Hash-->
-                        <TextBlock Grid.Row="3" Grid.Column="0" Text="SHA256 Hash:" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                        <Grid Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" >
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBox Grid.Row="0" Grid.Column="0" Text="{x:Bind CurrentlyEditingInstallerInfo.Hash}" HorizontalAlignment="Stretch" Margin="0,5" AccessKey="Q"/>
-                            <Button Content="Generate" Grid.Row="0" Grid.Column="1" Margin="5,0,0,0" Click="GenerateHashFromFile" AccessKey="G"/>
-                        </Grid>
-                        <TextBlock Grid.Row="3" Grid.Column="4" Text="*" Foreground="Red" Margin="5,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBox Grid.Row="3" Grid.Column="0" Text="{x:Bind CurrentlyEditingInstallerInfo.Hash}" HorizontalAlignment="Stretch" Margin="0,5" AccessKey="Q" Header="SHA256 Hash"/>
+                        <Button Content="Generate" Grid.Row="3" Grid.Column="1" Margin="5,23,0,0" Click="GenerateHashFromFile" AccessKey="G" HorizontalAlignment="Stretch" />
 
-                        <!--Buttons-->
-                        <StackPanel Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-                            <Button Content="Add" Click="CompleteAddInstaller" Width="80" AccessKey="J"/>
-                            <Button Content="Cancel" Margin="5,0,0,0" Click="CancelAddInstaller" Width="80" AccessKey="K"/>
+                        <TextBlock Grid.Row="3" Grid.Column="2" Text="*" Foreground="Red" Margin="5,23,5,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                        <!--Error display-->
+                        <StackPanel x:Name="ErrorPanel" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Background="#0FFF0000" BorderBrush="Red" BorderThickness="0,1,0,0" Padding="10" Margin="0,20,0,0" CornerRadius="2" Opacity="0" Windows10version1809:Scale="1,0,1">
+                            <Windows10version1809:StackPanel.OpacityTransition>
+                                <Windows10version1809:ScalarTransition />
+                            </Windows10version1809:StackPanel.OpacityTransition>
+                            <Windows10version1809:StackPanel.ScaleTransition>
+                                <Vector3Transition />
+                            </Windows10version1809:StackPanel.ScaleTransition>
+                            <TextBlock Foreground="Red" FontWeight="SemiBold" Margin="0,0,0,5">Error(s) found</TextBlock>
+                            <TextBlock x:Name="ErrorPanelText"></TextBlock>
                         </StackPanel>
+
                     </Grid>
+                </ContentDialog.Content>
+            </ContentDialog>
+            <!--<Border Background="#88888888" x:Name="InstallerPopup" Visibility="Collapsed" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <Border BorderBrush="{ThemeResource ButtonBorderThemeBrush}" BorderThickness="{StaticResource ButtonBorderThemeThickness}" 
+                Padding="10" Margin="30,10" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
+                    
                 </Border>
-            </Border>
+            </Border>-->
         </Grid>
         <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,10,10" HorizontalAlignment="Right">
             <HyperlinkButton Content="App source" NavigateUri="https://github.com/ptorr-msft/WinGetYamlGenerator" Margin="10,0,0,0"/>
