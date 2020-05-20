@@ -154,7 +154,7 @@
             </ScrollViewer>
 
             <ContentDialog x:Name="InstallerPopup" HorizontalContentAlignment="Stretch" Title="Installer details"
-                           PrimaryButtonText="Add" CloseButtonText="Cancel" PrimaryButtonClick="CompleteAddInstaller" Visibility="Collapsed" >
+                           PrimaryButtonText="Add" CloseButtonText="Cancel" PrimaryButtonClick="CompleteAddInstaller" Visibility="Visible" >
               
                 <ContentDialog.Content>
                     <Grid HorizontalAlignment="Stretch">
@@ -217,12 +217,6 @@
                     </Grid>
                 </ContentDialog.Content>
             </ContentDialog>
-            <!--<Border Background="#88888888" x:Name="InstallerPopup" Visibility="Collapsed" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <Border BorderBrush="{ThemeResource ButtonBorderThemeBrush}" BorderThickness="{StaticResource ButtonBorderThemeThickness}" 
-                Padding="10" Margin="30,10" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
-                    
-                </Border>
-            </Border>-->
         </Grid>
         <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,10,10" HorizontalAlignment="Right">
             <HyperlinkButton Content="App source" NavigateUri="https://github.com/ptorr-msft/WinGetYamlGenerator" Margin="10,0,0,0"/>
