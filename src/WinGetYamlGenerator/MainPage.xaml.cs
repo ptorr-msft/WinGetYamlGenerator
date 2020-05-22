@@ -13,7 +13,6 @@ using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.System;
-using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -45,10 +44,14 @@ namespace WinGetYamlGenerator
 
             ApplicationView.PreferredLaunchViewSize = new Size(780, 725);
             ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
+            StartupCheck();
+        }
 
+        private async void StartupCheck()
+        {
             if (!string.IsNullOrEmpty(App.InitError))
             {
-                ShowDialog("Startup error", App.InitError);
+                await ShowDialog("Startup error", App.InitError);
             }
         }
 
@@ -59,21 +62,24 @@ namespace WinGetYamlGenerator
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        async Task ShowErrors(IList<string> errors)
+        private async Task ShowErrors(IList<string> errors)
         {
-            StringBuilder builder = new StringBuilder($"Error(s) were found; please correct them before trying again:{Environment.NewLine}{Environment.NewLine}");
+            var builder = new StringBuilder($"Error(s) were found; please correct them before trying again:{Environment.NewLine}{Environment.NewLine}");
             foreach (var e in errors)
             {
                 builder.Append(e);
                 builder.Append(Environment.NewLine);
             }
             
-            ShowDialog("Errors in form", builder.ToString());
+            await ShowDialog("Errors in form", builder.ToString());
         }
 
         private async void DownloadInstaller(object sender, RoutedEventArgs e)
         {
             var downloadButton = sender as Button;
+
+            if (downloadButton == null) return;
+
             try
             {
                 downloadButton.IsEnabled = false;
@@ -113,7 +119,7 @@ namespace WinGetYamlGenerator
 
         private async void GenerateHashFromFile(object sender, RoutedEventArgs e)
         {
-            var generateButton = sender as Button;
+            if (!(sender is Button generateButton)) return;
             
             try
             {
@@ -155,9 +161,9 @@ namespace WinGetYamlGenerator
         }
 
         
-        private async void RemoveInstallerWithUI(object sender, RoutedEventArgs e)
+        private async void RemoveInstallerWithUi(object sender, RoutedEventArgs e)
         {
-            var data = (sender as Button).DataContext as InstallerInfo;
+            if (!(((Button) sender).DataContext is InstallerInfo data)) return;
 
             var dialog = new ContentDialog
             {
@@ -196,7 +202,7 @@ namespace WinGetYamlGenerator
 
         private async void SaveAsFile(object sender, RoutedEventArgs e)
         {
-            var saveButton = sender as Button;
+            if (!(sender is Button saveButton)) return;
 
             var errors = new List<string>();
             if (!AppInfo.Verify(errors))
@@ -223,11 +229,11 @@ namespace WinGetYamlGenerator
                 }
 
                 await FileIO.WriteTextAsync(file, yaml);
-                ShowDialog("Success", $"Saved as {picker.SuggestedFileName}.");
+                await ShowDialog("Success", $"Saved as {picker.SuggestedFileName}.");
             }
             catch (Exception ex)
             {
-                ShowDialog("Error", $"Error saving file: {ex.Message}{Environment.NewLine}{Environment.NewLine}Maybe try again later?");
+                await ShowDialog("Error", $"Error saving file: {ex.Message}{Environment.NewLine}{Environment.NewLine}Maybe try again later?");
             }
             finally
             {
@@ -244,7 +250,8 @@ namespace WinGetYamlGenerator
                 return;
             }
 
-            var copyButton = sender as Button;
+            if(!(sender is Button copyButton))return;
+            
             try
             {
                 copyButton.IsEnabled = false;
@@ -256,7 +263,7 @@ namespace WinGetYamlGenerator
             }
             catch (Exception ex)
             {
-                ShowDialog("Error", $"Error copying to clipboard: {ex.Message}{Environment.NewLine}{Environment.NewLine}Maybe try again later?");
+                await ShowDialog("Error", $"Error copying to clipboard: {ex.Message}{Environment.NewLine}{Environment.NewLine}Maybe try again later?");
             }
             finally
             {
@@ -266,19 +273,19 @@ namespace WinGetYamlGenerator
 
         public string CurrentVersion => $"v{App.CurrentVersion}";
 
-        private async void ShowDialog(string title, string content)
+        private async Task<ContentDialogResult> ShowDialog(string title, string content)
         {
-            var dialog = new ContentDialog()
+            var dialog = new ContentDialog
             {
                 Title = title,
                 Content = content,
                 CloseButtonText = "Close"
             };
 
-            await dialog.ShowAsync();
+            return await dialog.ShowAsync();
         }
 
-        private async void CompleteAddInstaller(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        private void CompleteAddInstaller(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
             var errors = new List<string>();
             if (!CurrentlyEditingInstallerInfo.Verify(errors))

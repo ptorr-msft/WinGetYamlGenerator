@@ -4,7 +4,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:WinGetYamlGenerator"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:Windows10version1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:build1809OrNewer="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     FontSize="15" d:DesignWidth="780" d:DesignHeight="725">
@@ -119,7 +120,7 @@
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-                                <ListView Grid.Column="0" BorderBrush="{ThemeResource TextBoxBorderThemeBrush}" BorderThickness="{ThemeResource TextControlBorderThemeThickness}" ItemsSource="{x:Bind AppInfo.Installers, Mode=OneTime}" AccessKey="Z" Windows10version1809:CornerRadius="2">
+                                <ListView Grid.Column="0" BorderBrush="{ThemeResource TextBoxBorderThemeBrush}" BorderThickness="{ThemeResource TextControlBorderThemeThickness}" ItemsSource="{x:Bind AppInfo.Installers, Mode=OneTime}" AccessKey="Z" build1809OrNewer:CornerRadius="2">
                                     <ListView.ItemContainerStyle>
                                         <Style TargetType="ListViewItem">
                                             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -127,10 +128,10 @@
                                     </ListView.ItemContainerStyle>
                                     <ListView.ItemTemplate >
                                         <DataTemplate x:DataType="local:InstallerInfo" >
-                                          <Grid HorizontalAlignment="Stretch">
-                                              <TextBlock Text="{x:Bind DisplayName, Mode=OneWay}" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                                              <AppBarButton Icon="Delete" Label="Delete" Click="RemoveInstallerWithUI"  HorizontalAlignment="Right" LabelPosition="Collapsed" />
-                                          </Grid>
+                                            <Grid HorizontalAlignment="Stretch">
+                                                <TextBlock Text="{x:Bind DisplayName, Mode=OneWay}" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                                <AppBarButton Icon="Delete" Label="Delete" Click="RemoveInstallerWithUi"  HorizontalAlignment="Right" LabelPosition="Collapsed" />
+                                            </Grid>
                                         </DataTemplate>
                                     </ListView.ItemTemplate>
                                 </ListView>
@@ -152,7 +153,7 @@
 
             <ContentDialog x:Name="InstallerPopup" HorizontalContentAlignment="Stretch" Title="Installer details"
                            PrimaryButtonText="Add" CloseButtonText="Cancel" PrimaryButtonClick="CompleteAddInstaller" Visibility="Visible"  >
-              
+
                 <ContentDialog.Content>
                     <Grid HorizontalAlignment="Stretch" Width="480">
                         <Grid.RowDefinitions>
@@ -200,13 +201,13 @@
                         <TextBlock Grid.Row="3" Grid.Column="2" Text="*" Foreground="Red" Margin="5,23,5,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
                         <!--Error display-->
-                        <StackPanel x:Name="ErrorPanel" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Background="#0FFF0000" BorderBrush="Red" BorderThickness="0,1,0,0" Padding="10" Margin="0,20,0,0" CornerRadius="2" Opacity="0" Windows10version1809:Scale="1,0,1">
-                            <Windows10version1809:StackPanel.OpacityTransition>
-                                <Windows10version1809:ScalarTransition />
-                            </Windows10version1809:StackPanel.OpacityTransition>
-                            <Windows10version1809:StackPanel.ScaleTransition>
+                        <StackPanel x:Name="ErrorPanel" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Background="#0FFF0000" BorderBrush="Red" BorderThickness="0,1,0,0" Padding="10" Margin="0,20,0,0" CornerRadius="2" Opacity="0" build1809OrNewer:Scale="1,0,1">
+                            <build1809OrNewer:StackPanel.OpacityTransition>
+                                <build1809OrNewer:ScalarTransition />
+                            </build1809OrNewer:StackPanel.OpacityTransition>
+                            <build1809OrNewer:StackPanel.ScaleTransition>
                                 <Vector3Transition />
-                            </Windows10version1809:StackPanel.ScaleTransition>
+                            </build1809OrNewer:StackPanel.ScaleTransition>
                             <TextBlock Foreground="Red" FontWeight="SemiBold" Margin="0,0,0,5">Error(s) found</TextBlock>
                             <TextBlock x:Name="ErrorPanelText"></TextBlock>
                         </StackPanel>

@@ -263,7 +263,8 @@ namespace WinGetYamlGenerator
         public void GenerateSuggestedAppId()
         {
             if (string.IsNullOrEmpty(publisher) || string.IsNullOrEmpty(name))
-            { return;
+            {
+                return;
             }
 
             var suggestion = $"{publisher}.{name}";
