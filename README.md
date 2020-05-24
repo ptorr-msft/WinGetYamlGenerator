@@ -7,3 +7,5 @@ The app is also available in [the Microsoft Store](https://www.microsoft.com/en-
 Because when winget was announced to our team (internally), someone said "I don't want to write YAML; can you make it easy?" and it also happened to be that person's birthday. So as a joke I made them a birthday present. 
 
 Then someone said "you should publish this" so here we are.
+
+![Store screen shot](/Store%20screen%20shot.png)
