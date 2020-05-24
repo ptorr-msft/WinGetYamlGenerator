@@ -17,6 +17,10 @@ namespace WinGetYamlGenerator
         EXE,
         MSI,
         MSIX,
+        INNO,
+        WINX,
+        NULLSOFT,
+        APPX,
     }
 
     public class InstallerInfo : PropertyChangedBase
