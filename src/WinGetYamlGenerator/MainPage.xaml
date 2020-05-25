@@ -201,13 +201,10 @@
                         <TextBlock Grid.Row="3" Grid.Column="2" Text="*" Foreground="Red" Margin="5,23,5,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
                         <!--Error display-->
-                        <StackPanel x:Name="ErrorPanel" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Background="#0FFF0000" BorderBrush="Red" BorderThickness="0,1,0,0" Padding="10" Margin="0,20,0,0" CornerRadius="2" Opacity="0" build1809OrNewer:Scale="1,0,1">
+                        <StackPanel x:Name="ErrorPanel" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Background="#0FFF0000" BorderBrush="Red" BorderThickness="0,1,0,0" Padding="10" Margin="0,20,0,0" CornerRadius="2">
                             <build1809OrNewer:StackPanel.OpacityTransition>
                                 <build1809OrNewer:ScalarTransition />
                             </build1809OrNewer:StackPanel.OpacityTransition>
-                            <build1809OrNewer:StackPanel.ScaleTransition>
-                                <Vector3Transition />
-                            </build1809OrNewer:StackPanel.ScaleTransition>
                             <TextBlock Foreground="Red" FontWeight="SemiBold" Margin="0,0,0,5">Error(s) found</TextBlock>
                             <TextBlock x:Name="ErrorPanelText"></TextBlock>
                         </StackPanel>

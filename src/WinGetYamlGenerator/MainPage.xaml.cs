@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
@@ -34,7 +33,8 @@ namespace WinGetYamlGenerator
             get => currentlyEditingInstallerInfo;
             set
             {
-                currentlyEditingInstallerInfo = value; RaisePropertyChanged();
+                currentlyEditingInstallerInfo = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -70,15 +70,28 @@ namespace WinGetYamlGenerator
                 builder.Append(e);
                 builder.Append(Environment.NewLine);
             }
-            
+
             await ShowDialog("Errors in form", builder.ToString());
+        }
+
+        private void ShowDialogErrors(string text)
+        {
+            ErrorPanelRow.Height = GridLength.Auto;
+            ErrorPanelText.Text = text;
+        }
+
+        private void HideDialogErrors()
+        {
+            ErrorPanelRow.Height = new GridLength(0);
+            ErrorPanelText.Text = String.Empty;
         }
 
         private async void DownloadInstaller(object sender, RoutedEventArgs e)
         {
-            var downloadButton = sender as Button;
-
-            if (downloadButton == null) return;
+            if (!(sender is Button downloadButton))
+            {
+                return;
+            }
 
             try
             {
@@ -91,25 +104,23 @@ namespace WinGetYamlGenerator
 
                 if (!CurrentlyEditingInstallerInfo.Uri.IsWebUrl())
                 {
-                    ErrorPanelRow.Height = GridLength.Auto;
-                    ErrorPanelText.Text =
-                        $"Cannot download from {CurrentlyEditingInstallerInfo.Uri.AbsoluteUri}'.";
-                    ErrorPanel.Opacity = 1;
-                    ErrorPanel.Scale = new Vector3(1,1,1);
+                    ShowDialogErrors($"Cannot download from {CurrentlyEditingInstallerInfo.Uri.AbsoluteUri}'.");
                     return;
                 }
 
-                var infoFlyout = new Flyout{Content = new TextBlock{Text = "Launching browser..."}};
+                var infoFlyout = new Flyout
+                {
+                    Content = new TextBlock
+                    {
+                        Text = "Launching browser..."
+                    }
+                };
                 infoFlyout.ShowAt(downloadButton);
                 await Launcher.LaunchUriAsync(CurrentlyEditingInstallerInfo.Uri);
             }
             catch (Exception ex)
             {
-                ErrorPanelRow.Height = GridLength.Auto;
-                ErrorPanelText.Text =
-                    $"Error trying to launch browser: {ex.Message}{Environment.NewLine}Maybe try again later?";
-                ErrorPanel.Opacity = 1;
-                ErrorPanel.Scale = new Vector3(1,1,1);
+                ShowDialogErrors($"Error trying to launch browser: {ex.Message}{Environment.NewLine}Maybe try again later?");
             }
             finally
             {
@@ -119,8 +130,11 @@ namespace WinGetYamlGenerator
 
         private async void GenerateHashFromFile(object sender, RoutedEventArgs e)
         {
-            if (!(sender is Button generateButton)) return;
-            
+            if (!(sender is Button generateButton))
+            {
+                return;
+            }
+
             try
             {
                 generateButton.IsEnabled = false;
@@ -132,8 +146,8 @@ namespace WinGetYamlGenerator
                 picker.FileTypeFilter.Add(".exe");
                 picker.FileTypeFilter.Add(".msi");
                 picker.FileTypeFilter.Add(".msix");
-                var file = await picker.PickSingleFileAsync();
 
+                var file = await picker.PickSingleFileAsync();
                 if (file != null)
                 {
                     var hasher = SHA256.Create();
@@ -147,23 +161,20 @@ namespace WinGetYamlGenerator
             }
             catch (Exception ex)
             {
-                ErrorPanelRow.Height = GridLength.Auto;
-                ErrorPanelText.Text =
-                    $"Error trying to calculate hash: {ex.Message}{Environment.NewLine}Maybe try again later?";
-                ErrorPanel.Opacity = 1;
-                ErrorPanel.Scale = new Vector3(1,1,1);
+                ShowDialogErrors($"Error trying to calculate hash: {ex.Message}{Environment.NewLine}Maybe try again later?");
             }
             finally
             {
                 generateButton.IsEnabled = true;
             }
-
         }
 
-        
         private async void RemoveInstallerWithUi(object sender, RoutedEventArgs e)
         {
-            if (!(((Button) sender).DataContext is InstallerInfo data)) return;
+            if (!(((Button)sender).DataContext is InstallerInfo data))
+            {
+                return;
+            }
 
             var dialog = new ContentDialog
             {
@@ -173,9 +184,8 @@ namespace WinGetYamlGenerator
                 SecondaryButtonText = "Cancel",
                 IsPrimaryButtonEnabled = true
             };
-            
-            var result = await dialog.ShowAsync();
 
+            var result = await dialog.ShowAsync();
             if (result != ContentDialogResult.Primary)
             {
                 return;
@@ -186,23 +196,23 @@ namespace WinGetYamlGenerator
 
         private async void AddNewInstallerWithUi(object sender, RoutedEventArgs e)
         {
-            ErrorPanelRow.Height = new GridLength(0);
-            ErrorPanel.Opacity = 0;
-            ErrorPanel.Scale = new Vector3(1,0,1);
-            ErrorPanelText.Text = "";
+            HideDialogErrors();
 
             var installer = new InstallerInfo
             {
                 InstallerKind = AppInfo.InstallerKind
             };
-            
+
             CurrentlyEditingInstallerInfo = installer;
             await InstallerPopup.ShowAsync();
         }
 
         private async void SaveAsFile(object sender, RoutedEventArgs e)
         {
-            if (!(sender is Button saveButton)) return;
+            if (!(sender is Button saveButton))
+            {
+                return;
+            }
 
             var errors = new List<string>();
             if (!AppInfo.Verify(errors))
@@ -243,18 +253,22 @@ namespace WinGetYamlGenerator
 
         private async void CopyToClipboard(object sender, RoutedEventArgs e)
         {
-            var errors = new List<string>();
-            if (!AppInfo.Verify(errors))
+            if (!(sender is Button copyButton))
             {
-                await ShowErrors(errors);
                 return;
             }
 
-            if(!(sender is Button copyButton))return;
-            
             try
             {
                 copyButton.IsEnabled = false;
+
+                var errors = new List<string>();
+                if (!AppInfo.Verify(errors))
+                {
+                    await ShowErrors(errors);
+                    return;
+                }
+
                 string yaml = AppInfo.GenerateYaml();
 
                 DataPackage package = new DataPackage();
@@ -290,25 +304,19 @@ namespace WinGetYamlGenerator
             var errors = new List<string>();
             if (!CurrentlyEditingInstallerInfo.Verify(errors))
             {
-                ErrorPanelRow.Height = GridLength.Auto;
-                
                 var builder = new StringBuilder();
                 foreach (var e in errors)
                 {
                     builder.Append(e);
                     builder.Append(Environment.NewLine);
                 }
-                ErrorPanelText.Text = builder.ToString().TrimEnd(Environment.NewLine.ToCharArray());
-                ErrorPanel.Opacity = 1;
-                ErrorPanel.Scale = new Vector3(1,1,1);
 
+                ShowDialogErrors(builder.ToString().TrimEnd(Environment.NewLine.ToCharArray()));
                 args.Cancel = true;
             }
             else
             {
-                ErrorPanel.Opacity = 0;
-                ErrorPanel.Scale = new Vector3(1,0,1);
-                ErrorPanelRow.Height = new GridLength(0);
+                HideDialogErrors();
                 AppInfo.Installers.Add(CurrentlyEditingInstallerInfo);
                 CurrentlyEditingInstallerInfo = null;
             }

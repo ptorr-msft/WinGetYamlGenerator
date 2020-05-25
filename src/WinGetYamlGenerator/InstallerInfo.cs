@@ -22,8 +22,6 @@ namespace WinGetYamlGenerator
 
     public class InstallerInfo : PropertyChangedBase
     {
-        
-        public ICommand Command { get; set; }
         ArchitectureKind arch;
         public ArchitectureKind Architecture
         {
