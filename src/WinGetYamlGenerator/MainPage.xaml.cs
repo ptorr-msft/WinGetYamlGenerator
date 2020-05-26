@@ -118,8 +118,8 @@ namespace WinGetYamlGenerator
                 picker.FileTypeFilter.Add(".msi");
                 picker.FileTypeFilter.Add(".msix");
                 picker.FileTypeFilter.Add(".msixbundle");
-                var file = await picker.PickSingleFileAsync();
 
+                var file = await picker.PickSingleFileAsync();
                 if (file != null)
                 {
                     var hasher = SHA256.Create();
