@@ -263,17 +263,27 @@ namespace WinGetYamlGenerator
                 copyButton.IsEnabled = false;
 
                 var errors = new List<string>();
-                if (!AppInfo.Verify(errors))
+                bool valid = AppInfo.Verify(errors);
+                if (!valid && !chkIgnoreErrors.IsChecked.GetValueOrDefault())
                 {
                     await ShowErrors(errors);
                     return;
                 }
 
-                string yaml = AppInfo.GenerateYaml();
+                string yaml = AppInfo.GenerateYaml(false);
 
                 DataPackage package = new DataPackage();
                 package.SetText(yaml);
                 Clipboard.SetContent(package);
+
+                var infoFlyout = new Flyout
+                {
+                    Content = new TextBlock
+                    {
+                        Text = $"Copied{(valid ? "" : " with error(s)")}"
+                    }
+                };
+                infoFlyout.ShowAt(btnCopy);
             }
             catch (Exception ex)
             {
@@ -285,7 +295,7 @@ namespace WinGetYamlGenerator
             }
         }
 
-        public string CurrentVersion => $"v{App.CurrentVersion}";
+        public string CurrentVersion => $"App v{App.CurrentVersion}";
 
         private async Task<ContentDialogResult> ShowDialog(string title, string content)
         {

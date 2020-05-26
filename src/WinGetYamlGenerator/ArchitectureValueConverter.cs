@@ -10,6 +10,7 @@ namespace WinGetYamlGenerator
     // x64 --> 1
     // ARM --> 2
     // ARM64 --> 3
+    // Neutral --> 4
 
     public class ArchitectureValueConverter : IValueConverter
     {

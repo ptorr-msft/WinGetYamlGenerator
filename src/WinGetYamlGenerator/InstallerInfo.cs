@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Windows.Input;
 
 namespace WinGetYamlGenerator
@@ -10,7 +11,8 @@ namespace WinGetYamlGenerator
         x86,
         x64,
         ARM,
-        ARM64
+        ARM64,
+        Neutral,
     }
 
     public enum InstallerKind
@@ -50,6 +52,13 @@ namespace WinGetYamlGenerator
             set => Set(value, ref hash);
         }
 
+        string language;
+        public string Language
+        {
+            get => language;
+            set => Set(value, ref language);
+        }
+
         public void SetHash(byte[] bytes)
         {
             Hash = BitConverter.ToString(bytes).Replace("-", "");
@@ -62,6 +71,7 @@ namespace WinGetYamlGenerator
             bool success = true;
             success &= VerifyArchitecture(errors);
             success &= VerifyKind(errors);
+            success &= VerifyLanguage(errors);
             success &= VerifyUrl(errors);
             success &= VerifyHash(errors);
 
@@ -80,6 +90,27 @@ namespace WinGetYamlGenerator
             return true;
         }
 
+        private bool VerifyLanguage(IList<string> errors)
+        {
+            if (string.IsNullOrEmpty(language))
+            {
+                // optional
+                return true;
+            }
+
+            try
+            {
+                var _ = new CultureInfo(language);
+            }
+            catch
+            {
+                errors.Add($"{language} is not a valid BCP-47 language code.");
+                return false;
+            }
+
+            return true;
+        }
+
         private bool VerifyUrl(IList<string> errors)
         {
             if (uri == null)
@@ -88,12 +119,11 @@ namespace WinGetYamlGenerator
                 return false;
             }
 
-            // TODO: Should this support FTP (and possibly other schemes)?
-            if (!uri.IsWebUrl())
+            // Per spec, it must be HTTPS
+            if (!uri.IsSecureWebUrl())
             {
-                errors.Add("Installer URL must be http[s].");
+                errors.Add("Installer URL must be https.");
                 return false;
-
             }
 
             return true;
