@@ -146,6 +146,7 @@ namespace WinGetYamlGenerator
                 picker.FileTypeFilter.Add(".exe");
                 picker.FileTypeFilter.Add(".msi");
                 picker.FileTypeFilter.Add(".msix");
+                picker.FileTypeFilter.Add(".msixbundle");
 
                 var file = await picker.PickSingleFileAsync();
                 if (file != null)

@@ -109,6 +109,10 @@
                                     <x:String>EXE</x:String>
                                     <x:String>MSI</x:String>
                                     <x:String>MSIX</x:String>
+                                    <x:String>APPX</x:String>
+                                    <x:String>INNO</x:String>
+                                    <x:String>WIX</x:String>
+                                    <x:String>NULLSOFT</x:String>
                                 </ComboBox.Items>
                             </ComboBox>
                             <TextBlock Grid.Row="10" Grid.Column="2" Text="*" Foreground="Red" Margin="5,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>

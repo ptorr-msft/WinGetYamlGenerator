@@ -9,6 +9,10 @@ namespace WinGetYamlGenerator
     // EXE--> 0
     // MSI --> 1
     // MSIX --> 2
+    // APPX --> 3
+    // INNO --> 4
+    // WIX --> 5
+    // NULLSOFT --> 6
 
     public class InstallerKindValueConverter : IValueConverter
     {
