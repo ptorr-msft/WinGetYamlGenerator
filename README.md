@@ -9,3 +9,6 @@ Because when winget was announced to our team (internally), someone said "I don'
 Then someone said "you should publish this" so here we are.
 
 ![Store screen shot](/Store%20screen%20shot.png)
+
+## Other related projects
+[HandyWinget-Gui](https://github.com/HandyOrg/HandyWinGet-GUI)
