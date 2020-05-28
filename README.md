@@ -11,4 +11,7 @@ Then someone said "you should publish this" so here we are.
 ![Store screen shot](/Store%20screen%20shot.png)
 
 ## Other related projects
-[HandyWinget-Gui](https://github.com/HandyOrg/HandyWinGet-GUI)
+
+These are other projects that help build Windows Package Manager manifests. Appearing in this list is not an endorsement, no warranties, etc.
+
+* [HandyWinget-Gui](https://github.com/HandyOrg/HandyWinGet-GUI)
