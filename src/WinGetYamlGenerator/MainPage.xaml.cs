@@ -20,6 +20,12 @@ using Windows.UI.Xaml.Controls;
 
 namespace WinGetYamlGenerator
 {
+    // Info needed when adding / editing an installer from the list
+    struct InstallerEditingState
+    {
+        public InstallerInfo originalInstaller;
+    }
+
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
@@ -195,16 +201,39 @@ namespace WinGetYamlGenerator
             AppInfo.Installers.Remove(data);
         }
 
-        private async void AddNewInstallerWithUi(object sender, RoutedEventArgs e)
+        private void AddNewInstallerWithUi(object sender, RoutedEventArgs e)
         {
-            HideDialogErrors();
-
             var installer = new InstallerInfo
             {
                 InstallerKind = AppInfo.InstallerKind
             };
 
-            CurrentlyEditingInstallerInfo = installer;
+            _ = ShowInstallerEditWindow(installer, true);
+        }
+
+        private void EditInstallerWithUi(object sender, RoutedEventArgs e)
+        {
+            InstallerInfo installer = (sender as Control).DataContext as InstallerInfo;
+            _ = ShowInstallerEditWindow(installer, false);
+        }
+
+        async Task ShowInstallerEditWindow(InstallerInfo info, bool isNewItem)
+        {
+            HideDialogErrors();
+
+            if (isNewItem)
+            {
+                CurrentlyEditingInstallerInfo = info;
+                InstallerPopup.Tag = new InstallerEditingState();
+                InstallerPopup.PrimaryButtonText = "Add";
+            }
+            else
+            {
+                CurrentlyEditingInstallerInfo = info.Clone();
+                InstallerPopup.Tag = new InstallerEditingState { originalInstaller = info };
+                InstallerPopup.PrimaryButtonText = "Save";
+            }
+
             await InstallerPopup.ShowAsync();
         }
 
@@ -328,7 +357,18 @@ namespace WinGetYamlGenerator
             else
             {
                 HideDialogErrors();
-                AppInfo.Installers.Add(CurrentlyEditingInstallerInfo);
+
+                // Tag is used to hold info about new vs. edit.
+                var editingInfo = (InstallerEditingState)sender.Tag;
+                if (editingInfo.originalInstaller == null)
+                {
+                    AppInfo.Installers.Add(CurrentlyEditingInstallerInfo);
+                }
+                else
+                {
+                    editingInfo.originalInstaller.CopyFrom(currentlyEditingInstallerInfo);
+                }
+
                 CurrentlyEditingInstallerInfo = null;
             }
         }

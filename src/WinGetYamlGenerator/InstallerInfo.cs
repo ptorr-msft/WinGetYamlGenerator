@@ -68,6 +68,24 @@ namespace WinGetYamlGenerator
             Hash = BitConverter.ToString(bytes).Replace("-", "");
         }
 
+        internal void CopyFrom(InstallerInfo other)
+        {
+            arch = other.arch;
+            kind = other.kind;
+            uri = other.uri;
+            hash = other.hash;
+            language = other.language;
+
+            RaisePropertyChanged(string.Empty);
+        }
+
+        internal InstallerInfo Clone()
+        {
+            var clone = new InstallerInfo();
+            clone.CopyFrom(this);
+            return clone;
+        }
+
         public string DisplayName => Architecture + " - " + uri.AbsoluteUri;
 
         public bool Verify(IList<string> errors)

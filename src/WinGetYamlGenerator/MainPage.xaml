@@ -130,11 +130,17 @@
                                             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                                         </Style>
                                     </ListView.ItemContainerStyle>
-                                    <ListView.ItemTemplate >
+                                    <ListView.ItemTemplate>
                                         <DataTemplate x:DataType="local:InstallerInfo" >
                                             <Grid HorizontalAlignment="Stretch">
-                                                <TextBlock Text="{x:Bind DisplayName, Mode=OneWay}" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                                                <AppBarButton Icon="Delete" Label="Delete" Click="RemoveInstallerWithUi"  HorizontalAlignment="Right" LabelPosition="Collapsed" />
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="{x:Bind DisplayName, Mode=OneWay}" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                                <AppBarButton Grid.Column="1" Icon="Edit" Label="Edit" Click="EditInstallerWithUi" LabelPosition="Collapsed"/>
+                                                <AppBarButton Grid.Column="2" Icon="Delete" Label="Delete" Click="RemoveInstallerWithUi"  LabelPosition="Collapsed"/>
                                             </Grid>
                                         </DataTemplate>
                                     </ListView.ItemTemplate>
@@ -191,16 +197,20 @@
                                 </ComboBox.Items>
                             </ComboBox>
                             <TextBlock Grid.Column="1" Text="*" Foreground="Red" Margin="5,23,20,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            
+
                             <ComboBox Grid.Column="2" SelectedIndex="{x:Bind CurrentlyEditingInstallerInfo.InstallerKind, Converter={StaticResource InstallerKindValueConverter}}" AccessKey="M" Header="Installer type" HorizontalAlignment="Stretch">
                                 <ComboBox.Items>
                                     <x:String>EXE</x:String>
                                     <x:String>MSI</x:String>
                                     <x:String>MSIX</x:String>
+                                    <x:String>APPX</x:String>
+                                    <x:String>INNO</x:String>
+                                    <x:String>WIX</x:String>
+                                    <x:String>NULLSOFT</x:String>
                                 </ComboBox.Items>
                             </ComboBox>
                             <TextBlock Grid.Column="3" Text="*" Foreground="Red" Margin="5,23,20,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            
+
                             <TextBox Grid.Column="4" Header="Language" Text="{x:Bind CurrentlyEditingInstallerInfo.Language}" HorizontalAlignment="Stretch" AccessKey="W"/>
                         </Grid>
 
