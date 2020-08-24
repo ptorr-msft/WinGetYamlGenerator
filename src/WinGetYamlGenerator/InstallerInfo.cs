@@ -68,6 +68,13 @@ namespace WinGetYamlGenerator
             Hash = BitConverter.ToString(bytes).Replace("-", "");
         }
 
+        string silentSwitch;
+        public string SilentSwitch
+        {
+            get => silentSwitch;
+            set => Set(value, ref silentSwitch);
+        }
+
         internal void CopyFrom(InstallerInfo other)
         {
             arch = other.arch;
@@ -75,6 +82,7 @@ namespace WinGetYamlGenerator
             uri = other.uri;
             hash = other.hash;
             language = other.language;
+            silentSwitch = other.silentSwitch;
 
             RaisePropertyChanged(string.Empty);
         }
@@ -96,6 +104,7 @@ namespace WinGetYamlGenerator
             success &= VerifyLanguage(errors);
             success &= VerifyUrl(errors);
             success &= VerifyHash(errors);
+            success &= VerifySilentSwitch (errors);
 
             return success;
         }
@@ -165,6 +174,12 @@ namespace WinGetYamlGenerator
                 return false;
             }
 
+            return true;
+        }
+
+        private bool VerifySilentSwitch(IList<string> _)
+        {
+            // probably anything is valid...
             return true;
         }
     }
