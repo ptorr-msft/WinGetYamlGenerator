@@ -14,14 +14,15 @@ namespace WinGetYamlGenerator
             return uri.Scheme.ToLowerInvariant() == "http" || uri.Scheme.ToLowerInvariant() == "https";
         }
 
-        internal static bool IsSecureWebUrl(this Uri uri)
+        internal static bool IsAcceptableDownalodUrl(this Uri uri)
         {
             if (uri == null)
             {
                 return false;
             }
 
-            return uri.Scheme.ToLowerInvariant() == "https";
+            var scheme = uri.Scheme.ToLowerInvariant();
+            return (scheme == "http" || scheme == "https");
         }
 
         internal static Version ToCanonicalVersion(this Version version)

@@ -219,7 +219,7 @@
             <TextBox Grid.Row="2" Grid.Column="0" Text="{x:Bind CurrentlyEditingInstallerInfo.SilentSwitch}" HorizontalAlignment="Stretch" Margin="0,5" AccessKey="1" Header="Silent switch (e.g. '/s')"/>
 
             <!--URL-->
-            <TextBox Grid.Row="3" Grid.Column="0" Text="{x:Bind CurrentlyEditingInstallerInfo.Uri, Converter={StaticResource UriValueConverter}}" HorizontalAlignment="Stretch" Margin="0,5" AccessKey="X" Header="URL"/>
+            <TextBox Grid.Row="3" Grid.Column="0" Text="{x:Bind CurrentlyEditingInstallerInfo.Uri, Converter={StaticResource UriValueConverter}}" HorizontalAlignment="Stretch" Margin="0,5" AccessKey="X" Header="URL (HTTPS preferred)"/>
             <Button Content="Download" Grid.Row="3" Grid.Column="1" Margin="5,23,0,0" Click="DownloadInstaller" AccessKey="O" HorizontalAlignment="Stretch" />
 
             <TextBlock Grid.Row="3" Grid.Column="2" Text="*" Foreground="Red" Margin="5,23,5,0" HorizontalAlignment="Center" VerticalAlignment="Center" />

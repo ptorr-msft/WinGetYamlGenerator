@@ -150,10 +150,10 @@ namespace WinGetYamlGenerator
                 return false;
             }
 
-            // Per spec, it must be HTTPS
-            if (!uri.IsSecureWebUrl())
+            // Per spec, it must be HTTP or HTTPS
+            if (!uri.IsAcceptableDownalodUrl())
             {
-                errors.Add("Installer URL must be https.");
+                errors.Add("Installer URL must be https or http.");
                 return false;
             }
 
