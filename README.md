@@ -1,4 +1,11 @@
 # WinGetYamlGenerator
+
+## Note that this project is currently on-hold (and has been removed from the Store).
+This was due to the schema changes in `winget` and the fact that there's now a built-in `winget-create` mechanism to create YAML files.
+If there's interest, I can update this project to work with the new schema...
+
+## About
+
 Simple GUI editor for creating YAML files for Windows Package Manager. Very bare-bones, but it does the job to get you started.
 
 The app is also available in [the Microsoft Store](https://www.microsoft.com/en-us/p/windows-package-manager-yaml-generator/9p3n60fs22k5).
